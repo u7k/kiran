@@ -50,8 +50,18 @@ class Number:
     def safe_dived_by(self, other):
         if isinstance(other, Number):
             if other.value == 0:
-                return Number(0).set_context(self.context), None
+                return Number(0.0).set_context(self.context), None
             return Number(self.value / other.value).set_context(self.context), None
+
+    def powed_by(self, other):
+        if isinstance(other, Number):
+            return Number(self.value ** other.value).set_context(self.context), None
+
+    def copy(self):
+        copy = Number(self.value)
+        copy.set_pos(self.pos_start, self.pos_end)
+        copy.set_context(self.context)
+        return copy
 
     def __repr__(self):
         return str(self.value)
@@ -74,13 +84,39 @@ class Interpreter:
             Number(node.tok.value).set_context(context).set_pos(node.pos_start, node.pos_end)
         )
 
+    # GET VALUE (VAR)
+    def visit_VarAccessNode(self, node, context):
+        res = RuntimeResult()
+        var_name = node.var_name_tok.value
+        value = context.symbol_table.get(var_name)
+
+        if not value:
+            return res.failure(RunTimeError(
+                node.pos_start, node.pos_end,
+                f"{var_name} is not defined",
+                context
+            ))
+
+        value = value.copy().set_pos(node.pos_start, node.pos_end)
+        return res.success(value)
+
+    # ASSIGN VALUE (VAR)
+    def visit_VarAssignNode(self, node, context):
+        res = RuntimeResult()
+        var_name = node.var_name_tok.value
+        value = res.register( self.visit(node.value_node, context) )
+        if res.error: return res
+
+        context.symbol_table.set(var_name, value)
+        return res.success(value)
+
     def visit_BinOpNode(self, node, context):
         res = RuntimeResult()
 
         # ACCESS CHILD NODES -> Number
-        left = res.register( self.visit(node.left_node, context) )
+        left = res.register(self.visit(node.left_node, context))
         if res.error: return res
-        right = res.register( self.visit(node.right_node, context) )
+        right = res.register(self.visit(node.right_node, context))
         if res.error: return res
 
         # DETERMINE OPERATION
@@ -94,18 +130,20 @@ class Interpreter:
             result, error = left.dived_by(right)
         elif node.op_tok.type == TT_SAFEDIV:
             result, error = left.safe_dived_by(right)
+        elif node.op_tok.type == TT_POW:
+            result, error = left.powed_by(right)
 
         if error:
             return res.failure(error)
         else:
             # -> RuntimeResult -> NUM
-            return res.success( result.set_pos(node.pos_start, node.pos_end) )
+            return res.success(result.set_pos(node.pos_start, node.pos_end))
 
     def visit_UnaryOpNode(self, node, context):
         res = RuntimeResult()
 
         # ACCESS CHILD NODE
-        number = res.register( self.visit(node.node, context) )
+        number = res.register(self.visit(node.node, context))
         if res.error: return res
 
         # NEGATE NUM IF -

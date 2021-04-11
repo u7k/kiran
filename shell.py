@@ -10,7 +10,9 @@ import kiran as k
 #######################################
 while True:
 	text = str(input('kiran > '))
-	if text == "exit": break
+	if text == "exit":
+		print("---\n> bye")
+		break
 	result, error = k.run('<stdin>', text)
 
 	if error: print(error.as_string())

@@ -8,6 +8,9 @@ from src.Parser import *
 from src.Interpreter import *
 from src.Context import *
 
+global_symbol_table = SymbolTable()
+global_symbol_table.set("null", Number(0))
+
 #######################################
 # RUN
 #######################################
@@ -25,6 +28,7 @@ def run(fn, text):
     # RUN PROGRAM
     interpreter = Interpreter()
     context = Context("<program>")
+    context.symbol_table = global_symbol_table
     result = interpreter.visit(ast.node, context)
 
     return result.value, result.error
