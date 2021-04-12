@@ -4,68 +4,7 @@
 #######################################
 
 from src.Token import *
-from src.Error import *
-
-#######################################
-# VALUES
-#######################################
-class Number:
-    def __init__(self, value):
-        self.value = value
-        self.set_pos()
-        self.set_context()
-
-    def set_pos(self, pos_start=None, pos_end=None):
-        self.pos_start = pos_start
-        self.pos_end = pos_end
-        return self
-
-    def set_context(self, context=None):
-        self.context = context
-        return self
-
-    def added_to(self, other):
-        # TYPE CHECK FOR THE 2nd NUM
-        if isinstance(other, Number):
-            return Number(self.value + other.value).set_context(self.context), None
-
-    def subbed_by(self, other):
-        if isinstance(other, Number):
-            return Number(self.value - other.value).set_context(self.context), None
-
-    def multed_by(self, other):
-        if isinstance(other, Number):
-            return Number(self.value * other.value).set_context(self.context), None
-
-    def dived_by(self, other):
-        if isinstance(other, Number):
-            if other.value == 0:
-                return None, RunTimeError(
-                    other.pos_start, other.pos_end,
-                    "Division by zero",
-                    self.context
-                )
-            return Number(self.value / other.value).set_context(self.context), None
-
-    def safe_dived_by(self, other):
-        if isinstance(other, Number):
-            if other.value == 0:
-                return Number(0.0).set_context(self.context), None
-            return Number(self.value / other.value).set_context(self.context), None
-
-    def powed_by(self, other):
-        if isinstance(other, Number):
-            return Number(self.value ** other.value).set_context(self.context), None
-
-    def copy(self):
-        copy = Number(self.value)
-        copy.set_pos(self.pos_start, self.pos_end)
-        copy.set_context(self.context)
-        return copy
-
-    def __repr__(self):
-        return str(self.value)
-
+from src.Number import *
 
 #######################################
 # INTERPRETER
@@ -132,6 +71,23 @@ class Interpreter:
             result, error = left.safe_dived_by(right)
         elif node.op_tok.type == TT_POW:
             result, error = left.powed_by(right)
+            ## LOGICAL & COMP. OPERATIONS
+        elif node.op_tok.type == TT_EE:
+            result, error = left.get_comparison_eq(right)
+        elif node.op_tok.type == TT_NE:
+            result, error = left.get_comparison_ne(right)
+        elif node.op_tok.type == TT_LT:
+            result, error = left.get_comparison_lt(right)
+        elif node.op_tok.type == TT_GT:
+            result, error = left.get_comparison_gt(right)
+        elif node.op_tok.type == TT_LTE:
+            result, error = left.get_comparison_lte(right)
+        elif node.op_tok.type == TT_GTE:
+            result, error = left.get_comparison_gte(right)
+        elif node.op_tok.matches(TT_KEYWORD, "AND"):
+            result, error = left.anded_by(right)
+        elif node.op_tok.matches(TT_KEYWORD, "OR"):
+            result, error = left.ored_by(right)
 
         if error:
             return res.failure(error)
@@ -146,10 +102,12 @@ class Interpreter:
         number = res.register(self.visit(node.node, context))
         if res.error: return res
 
-        # NEGATE NUM IF -
         error = None
         if node.op_tok.type == TT_MINUS:
+            # NEGATE NUM IF -
             number, error = number.multed_by(Number(-1))
+        elif node.op_tok.matches(TT_KEYWORD, 'NOT'):
+            number, error = number.notted()
 
         if error:
             return res.failure(error)

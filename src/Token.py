@@ -11,6 +11,7 @@ TT_FLOAT = "FLOAT"
 TT_IDENTIFIER = "IDENTIFIER"
 TT_KEYWORD = "KEYWORD"
 
+# ARITHMETIC
 TT_PLUS = "PLUS"
 TT_MINUS = "MINUS"
 TT_MUL = "MUL"
@@ -18,15 +19,31 @@ TT_DIV = "DIV"
 TT_SAFEDIV = "SAFEDIV"
 TT_POW = "POW"
 
-TT_EQ = "EQ"
+# COMPARISON
+TT_EE = "EE"    # ==
+TT_NE = "NE"    # !=
+TT_LT = "LT"    # <
+TT_GT = "GT"    # >
+TT_LTE = "LTE"  # <=
+TT_GTE = "GTE"  # >=
+
+# MULTI PURPOSE
+TT_EQ = "EQ"    # =
 TT_LPAREN = "LPAREN"
 TT_RPAREN = "RPAREN"
+
+# END OF LINE
 TT_EOF = "EOF"
 
 #######################################
 # KEYWORDS
 #######################################
-KEYWORDS = [ "VAR" ]
+KEYWORDS = [
+    "VAR",
+    "AND",
+    "OR",
+    "NOT"
+]
 
 #######################################
 # MODEL
