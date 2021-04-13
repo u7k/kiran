@@ -15,6 +15,9 @@ For example codes and projects with kiran, please visit:
 
 ## DOCS
 
+### Index
+// insert title links
+
 ### Arithmetic Operators
     -----------------------------------------------------
      + : Addition
@@ -53,6 +56,13 @@ For example codes and projects with kiran, please visit:
 Assigning multiple variables to same value:
         
         VAR a = VAR b = VAR c = 42
+
+You can change a variable's value by reusing the "VAR" keyword:
+
+        VAR price = 20
+        VAR price = 19.99
+
+        --> "price" variable is now equals to 19.99
 
 Built-in variables:
 
@@ -103,3 +113,26 @@ Built-in variables:
      NOT : Reverses the result,
            returns FALSE if the result is TRUE
     -----------------------------------------------------
+
+### IF...ELSE
+    -----------------------------------------------------
+     IF...THEN : IF <TRUE> THEN <execute this>
+    -----------------------------------------------------
+        Exm:
+            IF 7 == 7 THEN 42   -> returns 42
+            IF 7 != 7 THEN 42   -> does nothing
+    -----------------------------------------------------
+     ELIF...THEN : Checks other conditions.
+    -----------------------------------------------------
+        Exm:
+            VAR a = 3
+            IF a >= 7 THEN 100 ELIF a < 7 THEN 200
+                                --> returns 200
+    -----------------------------------------------------
+     ELSE : Catches anything that isn't caught by
+            preceding conditions.
+    -----------------------------------------------------
+        Exm:
+            VAR age = 17
+            VAR price = IF age >= 18 THEN 20 ELSE 15
+                                --> price = 15

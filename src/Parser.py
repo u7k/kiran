@@ -63,6 +63,68 @@ class Parser:
     #######################################
     # PRIVATE METHODS
     #######################################
+    def __if_expr(self):
+        res = ParseResult()
+        cases = []
+        else_case = None
+
+        if not self.current_tok.matches(TT_KEYWORD, 'IF'):
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end,
+                f"Expected 'IF'"
+            ))
+
+        # "IF" KEYWORD FOUND
+        res.register_advancement()
+        self.advance()
+
+        condition = res.register(self.__expr())
+        if res.error: return res
+
+        if not self.current_tok.matches(TT_KEYWORD, 'THEN'):
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end,
+                f"Expected 'THEN'"
+            ))
+
+        # "THEN" FOUND
+        res.register_advancement()
+        self.advance()
+
+        # 1ST CASE
+        expr = res.register(self.__expr())
+        if res.error: return res
+        cases.append((condition, expr))
+
+        while self.current_tok.matches(TT_KEYWORD, 'ELIF'):
+            res.register_advancement()
+            self.advance()
+
+            condition = res.register(self.__expr())
+            if res.error: return res
+
+            if not self.current_tok.matches(TT_KEYWORD, 'THEN'):
+                return res.failure(InvalidSyntaxError(
+                    self.current_tok.pos_start, self.current_tok.pos_end,
+                    f"Expected 'THEN'"
+                ))
+
+            res.register_advancement()
+            self.advance()
+            # MORE CASES
+            expr = res.register(self.__expr())
+            if res.error: return res
+            cases.append((condition, expr))
+
+        if self.current_tok.matches(TT_KEYWORD, 'ELSE'):
+            res.register_advancement()
+            self.advance()
+            # ELSE CASE
+            else_case = res.register(self.__expr())
+            if res.error: return res
+
+        return res.success(IfNode(cases, else_case))
+
     def __atom(self):
         res = ParseResult()
         tok = self.current_tok
@@ -91,6 +153,12 @@ class Parser:
                     self.current_tok.pos_start, self.current_tok.pos_end,
                     "Expected ')'"
                 ))
+
+        # CHECK FOR IF
+        elif tok.matches(TT_KEYWORD, "IF"):
+            if_expr = res.register(self.__if_expr())
+            if res.error: return res
+            return res.success(if_expr)
 
         return res.failure(InvalidSyntaxError(
             tok.pos_start, tok.pos_end,

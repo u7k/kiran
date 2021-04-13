@@ -23,7 +23,7 @@ class Interpreter:
             Number(node.tok.value).set_context(context).set_pos(node.pos_start, node.pos_end)
         )
 
-    # GET VALUE (VAR)
+    ## GET VALUE (VAR)
     def visit_VarAccessNode(self, node, context):
         res = RuntimeResult()
         var_name = node.var_name_tok.value
@@ -39,7 +39,7 @@ class Interpreter:
         value = value.copy().set_pos(node.pos_start, node.pos_end)
         return res.success(value)
 
-    # ASSIGN VALUE (VAR)
+    ## ASSIGN VALUE (VAR)
     def visit_VarAssignNode(self, node, context):
         res = RuntimeResult()
         var_name = node.var_name_tok.value
@@ -114,3 +114,27 @@ class Interpreter:
         else:
             # -> RuntimeResult -> NUM
             return res.success( number.set_pos(node.pos_start, node.pos_end) )
+
+    ## IF...ELSE
+    def visit_IfNode(self, node, context):
+        res = RuntimeResult()
+
+        for condition, expr in node.cases:
+            # GET CONDITION VALUE
+            condition_value = res.register(self.visit(condition, context))
+            if res.error: return res
+
+            # CHECK CONDITION
+            if condition_value.is_true():
+                expr_value = res.register(self.visit(expr, context))
+                if res.error: return res
+                return res.success(expr_value)
+
+        # OR PROCEED TO ELSE-CASE
+        if node.else_case:
+            else_value = res.register(self.visit(node.else_case, context))
+            if res.error: return res
+            return res.success(else_value)
+
+        # IF NO ELSE-CASE
+        return res.success(None)
