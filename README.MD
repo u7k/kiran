@@ -1,6 +1,7 @@
 
 # kiran
 ### minimum viable programming language
+    focus on the problem, not the language
 
 This language has written 100% in Python and can be a valuable source for someone to understand how the compilers works, due to codebase's readability.
 --or you can create original programs and have fun with it...
@@ -68,7 +69,7 @@ Built-in variables:
 
         NULL   -> is equal to 0 as a default
 
-    but you can change that:
+        but you can change that:
 
         VAR NULL = -1   -> null is now '-1'
 
@@ -136,3 +137,50 @@ Built-in variables:
             VAR age = 17
             VAR price = IF age >= 18 THEN 20 ELSE 15
                                 --> price = 15
+
+## FOR LOOP
+    -----------------------------------------------------
+     FOR <var-name> = <start-value> TO <end-value> STEP <count> THEN <expr>
+    -----------------------------------------------------
+            VAR result = 1
+            FOR i = 1 TO 11 THEN VAR result = result * i
+
+        You can change the increment with the STEP keyword:
+            FOR i = 0 TO 10 STEP 2 THEN VAR result = result + i
+
+        Negative STEP values are also allowed:
+            VAR res = 1
+            FOR i = 10 TO 0 STEP -1 THEN VAR res = res * i
+
+## WHILE LOOP
+    -----------------------------------------------------
+     WHILE <condition> THEN <expr>
+    -----------------------------------------------------
+        VAR i = 0
+        WHILE i < 100 THEN VAR i = i + 1    --> i = 100
+
+## FUNCTIONS
+    -----------------------------------------------------
+     FUNC <identifier> (args) -> <body>
+    -----------------------------------------------------
+     Creating a function:
+
+        FUNC add (a, b) -> a + b
+        
+     Calling a function:
+
+        add(3,7)
+
+     Assigning functions to variables:
+
+        VAR myAddFunc = add
+        myAddFunc(5,5)
+
+    -----------------------------------------------------
+     ANONYMOUS FUNCTIONS: FUNC (args) -> <body>
+    -----------------------------------------------------
+        
+        VAR someFunc = FUNC (a) -> a * 100
+        someFunc(10)
+
+    -----------------------------------------------------

@@ -32,6 +32,10 @@ TT_EQ = "EQ"    # =
 TT_LPAREN = "LPAREN"
 TT_RPAREN = "RPAREN"
 
+# FUNC
+TT_COMMA = "COMMA"
+TT_ARROW = "ARROW"
+
 # END OF LINE
 TT_EOF = "EOF"
 
@@ -46,7 +50,12 @@ KEYWORDS = [
     "IF",
     "THEN",
     "ELIF",
-    "ELSE"
+    "ELSE",
+    "FOR",
+    "TO",
+    "STEP",
+    "WHILE",
+    "FUNC"
 ]
 
 #######################################

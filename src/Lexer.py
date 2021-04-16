@@ -38,8 +38,7 @@ class Lexer:
                 tokens.append(Token(TT_PLUS, pos_start=self.pos))
                 self.advance()
             elif self.current_char == "-":
-                tokens.append(Token(TT_MINUS, pos_start=self.pos))
-                self.advance()
+                tokens.append(self.make_minus_or_arrow())
             elif self.current_char == "*":
                 tokens.append(Token(TT_MUL, pos_start=self.pos))
                 self.advance()
@@ -68,6 +67,9 @@ class Lexer:
                 tokens.append(self.make_less_than())
             elif self.current_char == ">":
                 tokens.append(self.make_greater_than())
+            elif self.current_char == ",":
+                tokens.append(Token(TT_COMMA, pos_start=self.pos))
+                self.advance()
             else:
                 pos_start = self.pos.copy()
                 char = self.current_char
@@ -107,11 +109,23 @@ class Lexer:
         tok_type = TT_KEYWORD if id_str in KEYWORDS else TT_IDENTIFIER
         return Token(tok_type, id_str, pos_start, self.pos)
 
+    def make_minus_or_arrow(self):
+        tok_type = TT_MINUS
+        pos_start = self.pos.copy()
+        self.advance()
+
+        # CATCH ->
+        if self.current_char == ">":
+            self.advance()
+            tok_type = TT_ARROW
+
+        return Token(tok_type, pos_start=pos_start, pos_end=self.pos)
+
     def make_not_equals(self):
         pos_start = self.pos.copy()
         self.advance()
 
-        # CHECK IF !=
+        # CATCH !=
         if self.current_char == "=":
             self.advance()
             return Token(TT_NE, pos_start=pos_start, pos_end=self.pos), None
@@ -125,7 +139,7 @@ class Lexer:
         pos_start = self.pos.copy()
         self.advance()
 
-        # CHECK IF ==
+        # CATCH ==
         if self.current_char == "=":
             self.advance()
             tok_type = TT_EE
@@ -137,7 +151,7 @@ class Lexer:
         pos_start = self.pos.copy()
         self.advance()
 
-        # CHECK IF <=
+        # CATCH <=
         if self.current_char == "=":
             self.advance()
             tok_type = TT_LTE
@@ -149,7 +163,7 @@ class Lexer:
         pos_start = self.pos.copy()
         self.advance()
 
-        # CHECK IF >=
+        # CATCH >=
         if self.current_char == "=":
             self.advance()
             tok_type = TT_GTE
