@@ -1,8 +1,3 @@
-#######################################
-#  kiran  >  string_with_arrows.py
-#  Created by Uygur Kiran on 2021/4/11.
-#######################################
-
 def string_with_arrows(text, pos_start, pos_end):
     result = ''
 
