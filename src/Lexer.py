@@ -30,10 +30,17 @@ class Lexer:
         while self.current_char is not None:
             if self.current_char in " \t":
                 self.advance()
+            elif self.current_char in ";\n":
+                tokens.append(Token(TT_NEWLINE, pos_start=self.pos))
+                self.advance()
+            elif self.current_char == '#':
+                self.skip_comment()
             elif self.current_char in DIGITS:
                 tokens.append(self.make_number())
             elif self.current_char in LETTERS:
                 tokens.append(self.make_identifier())
+            elif self.current_char == '"':
+                tokens.append(self.make_string())
             elif self.current_char == "+":
                 tokens.append(Token(TT_PLUS, pos_start=self.pos))
                 self.advance()
@@ -53,6 +60,12 @@ class Lexer:
                 self.advance()
             elif self.current_char == ")":
                 tokens.append(Token(TT_RPAREN, pos_start=self.pos))
+                self.advance()
+            elif self.current_char == '[':
+                tokens.append(Token(TT_LSQUARE, pos_start=self.pos))
+                self.advance()
+            elif self.current_char == ']':
+                tokens.append(Token(TT_RSQUARE, pos_start=self.pos))
                 self.advance()
             elif self.current_char == "^":
                 tokens.append(Token(TT_POW, pos_start=self.pos))
@@ -97,6 +110,32 @@ class Lexer:
             return Token(TT_INT, int(num_str), pos_start, self.pos)
         else:
             return Token(TT_FLOAT, float(num_str), pos_start, self.pos)
+
+    def make_string(self):
+        string = str()
+        pos_start = self.pos.copy()
+        escape_char = False
+        self.advance()
+
+        all_escape_chars = {
+            "n": "\n",
+            "t": "\t"
+        }
+
+        while self.current_char != None and (self.current_char != '"' or escape_char):
+            if escape_char:
+                string += all_escape_chars.get(self.current_char, self.current_char)
+            else:
+                if self.current_char == "\\":
+                    escape_char = True
+                else:
+                    string += self.current_char
+            self.advance()
+            escape_char = False
+
+        self.advance()
+        return Token(TT_STRING, string, pos_start, self.pos)
+
 
     def make_identifier(self):
         id_str = ""
@@ -168,3 +207,11 @@ class Lexer:
             self.advance()
             tok_type = TT_GTE
         return Token(tok_type, pos_start=pos_start, pos_end=self.pos)
+
+    def skip_comment(self):
+        self.advance()
+
+        while self.current_char != '\n':
+            self.advance()
+
+        self.advance()

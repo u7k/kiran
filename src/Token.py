@@ -8,6 +8,7 @@
 #######################################
 TT_INT = "INT"
 TT_FLOAT = "FLOAT"
+TT_STRING = "STRING"
 TT_IDENTIFIER = "IDENTIFIER"
 TT_KEYWORD = "KEYWORD"
 
@@ -32,9 +33,14 @@ TT_EQ = "EQ"    # =
 TT_LPAREN = "LPAREN"
 TT_RPAREN = "RPAREN"
 
+# LIST
+TT_LSQUARE = 'LSQUARE'
+TT_RSQUARE = 'RSQUARE'
+
 # FUNC
 TT_COMMA = "COMMA"
 TT_ARROW = "ARROW"
+TT_NEWLINE = "NEWLINE"
 
 # END OF LINE
 TT_EOF = "EOF"
@@ -55,7 +61,11 @@ KEYWORDS = [
     "TO",
     "STEP",
     "WHILE",
-    "FUNC"
+    "FUNC",
+    "END",
+    "RETURN",
+    "CONTINUE",
+    "BREAK"
 ]
 
 #######################################

@@ -1,0 +1,19 @@
+# MAP FUNC EXAMPLE
+FUNC map(list, func)
+    VAR new_list = []
+
+    FOR i = 0 TO LEN(list) THEN
+        APPEND(new_list, func(list/i))
+    END
+    RETURN new_list
+END
+
+# FUNC THAT RETURNS THE SQR
+FUNC sqr(n) -> n * n
+
+# SQR ALL NUMS
+VAR nums = [1,2,3,4]
+VAR mapped = map(nums, sqr)
+PRINT(mapped)
+
+

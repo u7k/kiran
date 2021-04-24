@@ -11,6 +11,9 @@ import kiran as k
 while True:
 	text = str(input('kiran > '))
 
+	## IF EMPTY INPUT
+	if text.strip() == "": continue
+
 	## SHELL EXIT
 	if text == "exit" or text == "quit":
 		print("---\n> bye")
@@ -21,5 +24,9 @@ while True:
 
 	## HANDLE RESULT
 	if error: print(error.as_string())
-	elif result: print(result)
+	elif result:
+		if len(result.elements) == 1:
+			print(repr(result.elements[0]))
+		else:
+			print(repr(result))
 

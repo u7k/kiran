@@ -1,0 +1,15 @@
+FUNC join(list, separator)
+    VAR result = ""
+    VAR len = LEN(list)
+
+    FOR i = 0 TO len THEN
+        VAR result = result + list/i
+        IF i != len-1 THEN VAR result = result + separator
+    END
+
+    RETURN result
+END
+
+
+VAR my_list = ["apple", "banana", "watermelon"]
+PRINT("*** new joined string: " + join(my_list, ", ") + " ***")

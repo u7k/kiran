@@ -1,0 +1,21 @@
+VAR answer = 42
+
+PRINT("")
+PRINT("Welcome to the guessing game!")
+PRINT("I'm thinking of a number between 1 and 100")
+PRINT("")
+
+WHILE TRUE THEN
+    PRINT("Make a guess: ")
+    VAR guess = INPUT_INT()
+
+    IF guess > answer THEN
+        PRINT("*** Too high. ***")
+    ELIF guess < answer THEN
+        PRINT("*** Too low. ***")
+    ELSE
+        PRINT("*** You got it! ***")
+        BREAK
+    END
+END
+
