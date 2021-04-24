@@ -5,7 +5,7 @@
 
 This programming language is written 100% in Python and may be a valuable source for someone to understand how the interpreters work.
 --or you can create original programs and have fun with it...
-The entire sourcecode of kiran is based on [CodePulse's videos](https://www.youtube.com/channel/UCUVahoidFA7F3Asfvamrm7w) 
+The entire source code of kiran is based on [CodePulse's videos](https://www.youtube.com/channel/UCUVahoidFA7F3Asfvamrm7w) 
 and [Ruslan's blog](https://ruslanspivak.com/lsbasi-part1/).
 
 ### INTERACTIVE SHELL
